@@ -16,10 +16,51 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 class Product {
 
-    String Product_Name;
-    String Product_Price;
-    String Date;
-    String Source;
+    private String Product_Name;
+    private String Product_Price;
+    private String Date;
+    private String Source;
+
+    // Getter
+    public String getProductName() {
+        return this.Product_Name;
+    }
+
+    // Setter
+    public void setProductName(String name) {
+        this.Product_Name = name;
+    }
+
+    // Getter
+    public String getProductPrice() {
+        return this.Product_Price;
+    }
+
+    // Setter
+    public void setProductPrice(String price) {
+        this.Product_Price = price;
+    }
+
+    // Getter
+    public String getDate() {
+        return this.Date;
+    }
+
+    // Setter
+    public void setDate(String date) {
+        this.Date = date;
+    }
+
+    // Getter
+    public String getSource() {
+        return this.Source;
+    }
+
+    // Setter
+    public void setSource(String source) {
+        this.Source = source;
+    }
+
 }
 
 public class AppTest {
@@ -63,10 +104,12 @@ public class AppTest {
             try {
                 String name = result.findElement(By.cssSelector(".sg-col-inner .a-section  .sg-row .sg-col-inner h2 a span")).getText();
                 String price = result.findElement(By.cssSelector(".sg-col-inner .a-section  .sg-row .sg-col-inner .sg-row .sg-col-inner a span span:nth-child(2) .a-price-whole")).getText();
-                listItem.Product_Name = name;
-                listItem.Product_Price = price;
-                listItem.Source = source;
-                listItem.Date = formattedDate;
+
+                listItem.setProductName(name);
+                listItem.setProductPrice(price);
+                listItem.setDate(formattedDate);
+                listItem.setSource(source);
+
                 this.title_price_list.add(listItem);
             } catch (Exception e) {
                 System.out.println("An exception occurred");
@@ -85,7 +128,17 @@ public class AppTest {
         this.results.clear();
     }
 
-//    String test = this.changePageUrl("2");
+    public void storeData() {
+        String path = "../data.json";
+        String json = new Gson().toJson(this.title_price_list);
+
+        try ( PrintWriter out = new PrintWriter(new FileWriter(path))) {
+            out.write(json);
+        } catch (Exception e) {
+            System.out.print("Something Wrong !");
+        }
+    }
+
     @Test
     public void run() {
         this.generateResultsIndex();
@@ -98,15 +151,8 @@ public class AppTest {
             counter += 1;
         }
         this.browser.quit();
+        this.storeData();
         int finalData = this.title_price_list.size();
-        String path = "../data.json";
-        String json = new Gson().toJson(this.title_price_list);
-        try ( PrintWriter out = new PrintWriter(new FileWriter(path))) {
-            out.write(json);
-        } catch (Exception e) {
-            System.out.print("Something Wrong !");
-        }
-        System.out.print(json);
         System.out.println("Total rows: " + finalData);
 
     }
